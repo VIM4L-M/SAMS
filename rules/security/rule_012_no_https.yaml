@@ -1,0 +1,8 @@
+id: rule_012
+category: security
+title: "Unencrypted HTTP Connection"
+description: "One or more connections use plain HTTP instead of HTTPS. All data transmitted — including credentials, tokens, and personal information — is visible to anyone on the network path."
+suggestion: "Switch all connections to HTTPS. Get a free TLS certificate from Let's Encrypt. Terminate TLS at your load balancer or API gateway. Redirect all HTTP traffic to HTTPS."
+baseWeight: 15
+conditions:
+  direct: true

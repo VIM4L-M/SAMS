@@ -1,0 +1,11 @@
+id: rule_016
+category: reliability
+title: "No Monitoring Strategy"
+description: "Growing and scaling systems need observability. Without monitoring, you will learn about outages from users, not alerts. Mean time to recovery (MTTR) increases dramatically without metrics and logs."
+suggestion: "Add monitoring for your backend services. At minimum: error rate, latency p99, and saturation. Use tools like Prometheus + Grafana, Datadog, or New Relic. Set up alerts for abnormal error rates."
+baseWeight: 10
+conditions:
+  contextChecks:
+    stage: "growing"
+  requiredNodes:
+    - backend

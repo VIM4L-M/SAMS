@@ -1,0 +1,10 @@
+id: rule_015
+category: reliability
+title: "No Backup Strategy"
+description: "Your database has no backup configured. Data loss from accidental deletion, corruption, or ransomware would be unrecoverable."
+suggestion: "Enable the Backups property on your database. Configure automated daily backups with point-in-time recovery. Test your restore process — backups only matter if you can restore from them."
+baseWeight: 12
+conditions:
+  nodeType: "database"
+  properties:
+    backups: false

@@ -1,0 +1,9 @@
+id: rule_026
+category: scalability
+title: "No Circuit Breaker on Microservices"
+description: "Microservices calling each other synchronously without circuit breakers risk cascading failures. If one service slows down, all callers queue up threads waiting, eventually causing a system-wide outage."
+suggestion: "Enable the Circuit Breaker property on your microservices, or use a service mesh. Circuit breakers detect downstream failures and fast-fail requests before threads are exhausted."
+baseWeight: 10
+conditions:
+  requiredNodes:
+    - microservice

@@ -1,0 +1,9 @@
+id: rule_023
+category: scalability
+title: "Stateful Servers"
+description: "Servers that store state in-process cannot be scaled horizontally. Adding more instances will result in inconsistent behavior as different users reach different instances with different state."
+suggestion: "Make your servers stateless by moving all state to external storage (Redis for sessions, database for persistent data). Stateless servers can be scaled freely."
+baseWeight: 10
+conditions:
+  properties:
+    stateless: false

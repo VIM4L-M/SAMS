@@ -1,0 +1,14 @@
+id: rule_001
+category: performance
+title: "Missing Cache Layer"
+description: "Your backend queries the database directly under high traffic. Without a cache layer, every request hits the database, causing slow response times and potential database overload."
+suggestion: "Add a Redis or Memcached node between your backend and database. Cache frequently-read data to reduce database load and improve response times."
+baseWeight: 10
+conditions:
+  contextChecks:
+    trafficLevel: "high"
+  requiredNodes:
+    - backend
+    - database
+  forbiddenNodes:
+    - cache

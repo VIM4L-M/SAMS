@@ -1,0 +1,11 @@
+id: rule_017
+category: reliability
+title: "No Deployment Strategy"
+description: "Multiple services at scale with no defined deployment strategy means every deploy is a potential outage. Deploying to all instances simultaneously causes downtime."
+suggestion: "Implement rolling deployments or blue-green deployments. With a load balancer, you can drain traffic from instances being updated, achieving zero-downtime deployments."
+baseWeight: 8
+conditions:
+  contextChecks:
+    stage: "scale"
+  requiredNodes:
+    - backend

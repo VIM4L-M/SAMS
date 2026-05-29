@@ -1,0 +1,10 @@
+id: rule_029
+category: scalability
+title: "Memcached Cannot Handle Sessions Reliably"
+description: "Memcached does not support persistence and can evict data at any time. Storing user sessions in Memcached means sessions can disappear unexpectedly, logging users out randomly."
+suggestion: "Replace Memcached with Redis for session storage. Redis supports persistence and atomic operations needed for reliable session management. Keep Memcached only for purely disposable cache data."
+baseWeight: 12
+conditions:
+  nodeType: "cache"
+  requiredNodes:
+    - apigateway

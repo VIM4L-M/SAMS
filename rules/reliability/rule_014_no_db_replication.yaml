@@ -1,0 +1,11 @@
+id: rule_014
+category: reliability
+title: "No Database Replication"
+description: "A single database instance without replication is both a single point of failure and a read bottleneck. If the database server fails, all data is unavailable."
+suggestion: "Enable the Replication property on your database. Set up a primary-replica configuration where the replica can be promoted if the primary fails. Replicas also serve read traffic."
+baseWeight: 15
+conditions:
+  properties:
+    replication: false
+  contextChecks:
+    trafficLevel: "high"

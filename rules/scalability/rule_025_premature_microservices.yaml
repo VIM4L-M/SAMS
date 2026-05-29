@@ -1,0 +1,10 @@
+id: rule_025
+category: scalability
+title: "Premature Microservices"
+description: "Microservices add operational complexity: distributed tracing, service discovery, network failures, and deployment orchestration. For a solo/small team in early stage, this overhead slows you down without meaningful benefit."
+suggestion: "Start with a well-structured monolith. Extract services only when you have a proven scaling bottleneck and the team capacity to operate distributed systems. 'Monolith first' is a proven strategy."
+baseWeight: 6
+conditions:
+  contextChecks:
+    stage: "early"
+    teamSize: "solo"

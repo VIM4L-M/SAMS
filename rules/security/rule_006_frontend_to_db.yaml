@@ -1,0 +1,10 @@
+id: rule_006
+category: security
+title: "Frontend Directly Connected to Database"
+description: "Your frontend has a direct connection to the database. Frontend code runs in the browser and is visible to everyone. Connecting it directly to a database exposes your credentials and the entire database to any user."
+suggestion: "Remove the direct frontend-to-database connection immediately. Your frontend should only communicate with your backend API. The backend validates, authorizes, and queries the database."
+baseWeight: 20
+conditions:
+  sourceType: "frontend"
+  targetType: "database"
+  direct: true

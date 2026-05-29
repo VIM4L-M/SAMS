@@ -1,0 +1,11 @@
+id: rule_010
+category: security
+title: "Verbose Error Messages"
+description: "Without a defined error handling layer and API gateway, stack traces and internal error details may leak to clients. This reveals your technology stack, file paths, and internal logic to attackers."
+suggestion: "Never return raw stack traces or database errors to clients. Return generic error messages to users and log detailed errors server-side. An API gateway can normalize error responses."
+baseWeight: 8
+conditions:
+  requiredNodes:
+    - backend
+  forbiddenNodes:
+    - apigateway

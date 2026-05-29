@@ -1,0 +1,10 @@
+id: rule_024
+category: scalability
+title: "Monolith Under High Load with Large Team"
+description: "A single backend service handling massive traffic with a large team creates deployment bottlenecks. Every feature requires a full application deploy, slowing down development and increasing risk."
+suggestion: "Consider decomposing your monolith into services by business domain. Start with the highest-traffic or most independently-deployable features. This is a gradual migration, not a big-bang rewrite."
+baseWeight: 8
+conditions:
+  contextChecks:
+    trafficLevel: "high"
+    teamSize: "large"

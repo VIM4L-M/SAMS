@@ -1,0 +1,9 @@
+id: rule_022
+category: scalability
+title: "No Centralized Session Storage"
+description: "Multiple backend instances without centralized session storage means user sessions are tied to specific servers. Load balancers will break sessions when routing to different instances."
+suggestion: "Add Redis for centralized session storage. All backend instances share the same session store, making the cluster truly stateless and load-balancer-friendly."
+baseWeight: 10
+conditions:
+  requiredNodes:
+    - apigateway

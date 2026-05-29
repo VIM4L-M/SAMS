@@ -1,0 +1,8 @@
+id: rule_028
+category: scalability
+title: "Redis May Be Overkill for Simple Cache"
+description: "Redis is a powerful but operationally heavier solution. For a simple single-backend setup with no session management needs, Memcached or in-process caching may be simpler."
+suggestion: "If you only need simple key-value caching with no persistence or pub/sub, consider Memcached. It is simpler to operate and sufficient for many caching use cases."
+baseWeight: 3
+conditions:
+  nodeType: "cache"

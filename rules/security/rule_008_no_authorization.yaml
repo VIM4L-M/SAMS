@@ -1,0 +1,11 @@
+id: rule_008
+category: security
+title: "Missing Authorization Controls"
+description: "Authentication (who are you?) is in place but authorization (what can you do?) is not represented. As your application grows, without RBAC, users may access resources they shouldn't."
+suggestion: "Define roles and permissions at the API Gateway or in your backend. Implement RBAC (Role-Based Access Control) so that authenticated users can only access resources appropriate to their role."
+baseWeight: 12
+conditions:
+  requiredNodes:
+    - apigateway
+  contextChecks:
+    stage: "growing"

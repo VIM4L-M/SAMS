@@ -1,0 +1,11 @@
+id: rule_007
+category: security
+title: "Missing Authentication Layer"
+description: "Your backend API has no API gateway or authentication layer. Any request can reach your backend services without identity verification."
+suggestion: "Add an API Gateway to centralize authentication. Implement JWT or OAuth2. Every request should carry a verified token before reaching your backend."
+baseWeight: 15
+conditions:
+  requiredNodes:
+    - backend
+  forbiddenNodes:
+    - apigateway

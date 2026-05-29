@@ -1,0 +1,12 @@
+id: rule_011
+category: security
+title: "No Rate Limiting"
+description: "Your public-facing API has no rate limiting. Attackers can brute-force credentials, scrape all your data, or launch denial-of-service attacks without any friction."
+suggestion: "Add an API Gateway or Load Balancer with rate limiting. Apply per-IP and per-user limits. For authentication endpoints specifically, use aggressive rate limits (e.g., 5 attempts per minute)."
+baseWeight: 10
+conditions:
+  requiredNodes:
+    - frontend
+  forbiddenNodes:
+    - apigateway
+    - loadbalancer

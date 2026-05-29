@@ -1,0 +1,15 @@
+id: rule_018
+category: performance
+title: "N+1 Query Problem Risk"
+description: "High read traffic hitting the database directly without caching is a recipe for N+1 query problems. Each list item may trigger an additional database query, causing exponential slowdowns."
+suggestion: "Add a cache layer and ensure your ORM or query layer uses eager loading. Redis can cache computed result sets to eliminate repeated identical queries."
+baseWeight: 7
+conditions:
+  contextChecks:
+    trafficLevel: "high"
+    readWriteRatio: "read_heavy"
+  requiredNodes:
+    - backend
+    - database
+  forbiddenNodes:
+    - cache

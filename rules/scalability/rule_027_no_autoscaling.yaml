@@ -1,0 +1,11 @@
+id: rule_027
+category: scalability
+title: "No Auto Scaling Strategy"
+description: "High or massive traffic without load balancing means a single server must handle all traffic. Traffic spikes will cause slowdowns or outages with no automated recovery."
+suggestion: "Add a Load Balancer and run multiple backend instances. With a load balancer in place, you can add/remove instances automatically based on CPU or request rate."
+baseWeight: 8
+conditions:
+  contextChecks:
+    trafficLevel: "high"
+  forbiddenNodes:
+    - loadbalancer

@@ -1,0 +1,11 @@
+id: rule_019
+category: performance
+title: "Missing Database Indexes"
+description: "High traffic without proper database indexes will result in full table scans. As your dataset grows, query performance degrades linearly or worse."
+suggestion: "Analyze your most frequent queries and add indexes on filter/sort columns. For PostgreSQL use EXPLAIN ANALYZE. For MongoDB use explain('executionStats')."
+baseWeight: 8
+conditions:
+  contextChecks:
+    trafficLevel: "high"
+  requiredNodes:
+    - database

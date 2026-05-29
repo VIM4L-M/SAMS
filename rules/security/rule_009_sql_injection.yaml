@@ -1,0 +1,11 @@
+id: rule_009
+category: security
+title: "SQL Injection Risk"
+description: "A backend directly accessing PostgreSQL without an API gateway layer has no enforced input validation boundary. SQL injection remains one of the most common and devastating vulnerabilities."
+suggestion: "Always use parameterized queries or an ORM — never string-concatenate user input into SQL. Add an API gateway to enforce input validation at the boundary. Enable pg_stat_statements for query monitoring."
+baseWeight: 15
+conditions:
+  sourceType: "backend"
+  targetType: "database"
+  forbiddenNodes:
+    - apigateway

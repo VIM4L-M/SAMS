@@ -1,0 +1,15 @@
+id: rule_003
+category: scalability
+title: "No Queue for High Write Traffic"
+description: "High write traffic hitting the database directly without a queue creates write bottlenecks. Spikes in write traffic can overwhelm the database and cause failures."
+suggestion: "Add a Kafka or RabbitMQ queue between your backend and database for write operations. Consumers can process writes at a controlled rate, absorbing traffic spikes."
+baseWeight: 12
+conditions:
+  contextChecks:
+    trafficLevel: "high"
+    readWriteRatio: "write_heavy"
+  requiredNodes:
+    - backend
+    - database
+  forbiddenNodes:
+    - queue

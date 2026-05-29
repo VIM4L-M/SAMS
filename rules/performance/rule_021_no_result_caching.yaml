@@ -1,0 +1,15 @@
+id: rule_021
+category: performance
+title: "No Computed Result Caching"
+description: "Read-heavy workloads under high traffic repeatedly compute and fetch the same data from the database. Without result caching, you are doing redundant work on every request."
+suggestion: "Cache computed results in Redis with appropriate TTLs. Identify your most frequently-read, rarely-changing data and cache those endpoints first."
+baseWeight: 6
+conditions:
+  contextChecks:
+    trafficLevel: "high"
+    readWriteRatio: "read_heavy"
+  requiredNodes:
+    - backend
+    - database
+  forbiddenNodes:
+    - cache

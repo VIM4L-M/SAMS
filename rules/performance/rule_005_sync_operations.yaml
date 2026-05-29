@@ -1,0 +1,11 @@
+id: rule_005
+category: performance
+title: "All Operations Are Synchronous"
+description: "All connections between services are synchronous. Under load, slow operations block request threads and degrade overall throughput."
+suggestion: "Introduce a message queue (Kafka or RabbitMQ) for non-critical operations. Use async patterns for email, notifications, reports, and background jobs."
+baseWeight: 8
+conditions:
+  requiredNodes:
+    - backend
+  forbiddenNodes:
+    - queue

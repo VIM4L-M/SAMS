@@ -1,0 +1,31 @@
+# Go
+backend/bin/
+backend/*.exe
+backend/tmp/
+*.test
+*.out
+
+# Frontend (Phase B)
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.*.local
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Air (Go hot reload)
+backend/.air.toml
+backend/tmp/

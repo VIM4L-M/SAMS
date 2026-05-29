@@ -1,0 +1,12 @@
+id: rule_002
+category: reliability
+title: "Files Stored in Wrong Place"
+description: "Storing files (images, documents, uploads) directly in a relational database is expensive and doesn't scale. Databases are not optimized for binary blobs and will degrade under file storage load."
+suggestion: "Add an Object Storage node (S3, Cloudflare R2, or MinIO). Store files in object storage and save only the file URL in your database. This is cheaper, faster, and infinitely scalable."
+baseWeight: 12
+conditions:
+  requiredNodes:
+    - backend
+    - database
+  forbiddenNodes:
+    - storage

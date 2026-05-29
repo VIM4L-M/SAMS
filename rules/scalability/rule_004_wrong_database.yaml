@@ -1,0 +1,8 @@
+id: rule_004
+category: scalability
+title: "Wrong Database for Use Case"
+description: "MongoDB is a document database optimized for flexible schemas. Complex relational data with many joins and transactions is better served by a relational database like PostgreSQL."
+suggestion: "Consider switching to PostgreSQL if your data has strong relationships, requires ACID transactions, or needs complex joins. MongoDB excels at document storage, not relational data."
+baseWeight: 15
+conditions:
+  nodeType: "database"

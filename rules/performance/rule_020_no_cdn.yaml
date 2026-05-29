@@ -1,0 +1,13 @@
+id: rule_020
+category: performance
+title: "No CDN for Global User Base"
+description: "With a global user base and no CDN, users far from your origin server experience high latency for static assets like HTML, CSS, JS, and images."
+suggestion: "Add a CDN node (Cloudflare, AWS CloudFront, or Fastly). CDNs cache static assets at edge locations worldwide, drastically reducing latency for global users."
+baseWeight: 8
+conditions:
+  contextChecks:
+    userBase: "global"
+  requiredNodes:
+    - frontend
+  forbiddenNodes:
+    - cdn

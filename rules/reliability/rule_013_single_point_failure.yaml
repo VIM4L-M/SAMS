@@ -1,0 +1,9 @@
+id: rule_013
+category: reliability
+title: "Single Point of Failure — Backend Server"
+description: "A single backend server with no load balancer is a single point of failure. If this server goes down, your entire application is unavailable."
+suggestion: "Add a Load Balancer and run at least 2 backend instances. With a load balancer, traffic is automatically routed away from unhealthy instances."
+baseWeight: 15
+conditions:
+  forbiddenNodes:
+    - loadbalancer
