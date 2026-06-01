@@ -14,14 +14,19 @@ func NewValidator(rules []models.Rule) *Validator {
 
 func (v *Validator) Validate(req models.ValidationRequest) models.ValidationResult {
 	if len(req.Nodes) == 0 {
-		return models.ValidationResult{Score: 100}
+		return models.ValidationResult{
+			Errors:   []models.Issue{},
+			Warnings: []models.Issue{},
+			Passed:   []models.PassedRule{},
+			Score:    100,
+		}
 	}
 
 	graph := BuildGraph(req.Nodes, req.Edges)
 	ctx := req.Context
 
-	var errors []models.Issue
-	var warnings []models.Issue
+	errors := []models.Issue{}
+	warnings := []models.Issue{}
 	rulesFired := make(map[string]bool)
 
 	addError := func(rule models.Rule, nodes []string, edges []string) {
@@ -408,7 +413,7 @@ func (v *Validator) Validate(req models.ValidationRequest) models.ValidationResu
 	}
 
 	// ── Build passed rules ────────────────────────────────────────────────────
-	var passed []models.PassedRule
+	passed := []models.PassedRule{}
 	for _, r := range v.rules {
 		if !rulesFired[r.ID] {
 			passed = append(passed, models.PassedRule{

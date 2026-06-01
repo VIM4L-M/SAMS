@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./rules:/app/rules:ro
+    environment:
+      - RULES_PATH=/app/rules
+      - PORT=8080
+      - ALLOWED_ORIGINS=http://localhost:3000
+      - ENV=production
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_URL=http://localhost:8080
+    depends_on:
+      - backend
