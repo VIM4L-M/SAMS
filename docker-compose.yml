@@ -9,14 +9,14 @@ services:
     environment:
       - RULES_PATH=/app/rules
       - PORT=8080
-      - ALLOWED_ORIGINS=http://localhost:3000
-      - ENV=production
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000}
+      - ENV=${ENV:-production}
 
   frontend:
     build: ./frontend
     ports:
       - "3000:3000"
-    environment:
-      - VITE_API_URL=http://localhost:8080
+    # The frontend talks to the backend via a relative /api path; nginx (see
+    # frontend/nginx.conf) proxies /api/ to the backend service — no build-time URL needed.
     depends_on:
       - backend

@@ -20,7 +20,9 @@ func Load() Config {
 
 	rulesPath := os.Getenv("RULES_PATH")
 	if rulesPath == "" {
-		rulesPath = "./rules"
+		// Default assumes the server is run from the backend/ module directory,
+		// where the rule library lives one level up at ../rules.
+		rulesPath = "../rules"
 	}
 
 	originsEnv := os.Getenv("ALLOWED_ORIGINS")
