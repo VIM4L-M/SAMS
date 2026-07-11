@@ -1,4 +1,13 @@
 import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import {
+  applyNodeChanges,
+  applyEdgeChanges,
+  type NodeChange,
+  type EdgeChange,
+  type Node,
+  type Edge,
+} from '@xyflow/react'
 import type { SAMSNode, SAMSEdge, Context, ValidationResponse, NodeData } from '../types'
 
 const defaultContext: Context = {
@@ -7,6 +16,13 @@ const defaultContext: Context = {
   userBase: 'regional',
   teamSize: 'small',
   stage: 'early',
+}
+
+export interface DiagramSnapshot {
+  version: 1
+  nodes: SAMSNode[]
+  edges: SAMSEdge[]
+  context: Context
 }
 
 interface SAMSStore {
@@ -20,6 +36,10 @@ interface SAMSStore {
   isValidating: boolean
   highlightedNodes: string[]
   highlightedEdges: string[]
+
+  // React Flow controlled-mode change handlers (store is the single source of truth)
+  onNodesChange: (changes: NodeChange[]) => void
+  onEdgesChange: (changes: EdgeChange[]) => void
 
   addNode: (node: SAMSNode) => void
   removeNode: (id: string) => void
@@ -35,49 +55,92 @@ interface SAMSStore {
   highlightIssue: (nodeIds: string[], edgeIds: string[]) => void
   clearHighlights: () => void
   resetCanvas: () => void
+
+  // Persistence
+  exportDiagram: () => DiagramSnapshot
+  loadDiagram: (snapshot: DiagramSnapshot) => void
 }
 
-export const useSAMSStore = create<SAMSStore>((set) => ({
-  nodes: [],
-  edges: [],
-  selectedNodeId: null,
-  context: defaultContext,
-  validationResults: null,
-  isValidating: false,
-  highlightedNodes: [],
-  highlightedEdges: [],
-
-  addNode: (node) => set((s) => ({ nodes: [...s.nodes, node] })),
-  removeNode: (id) =>
-    set((s) => ({
-      nodes: s.nodes.filter((n) => n.id !== id),
-      edges: s.edges.filter((e) => e.source !== id && e.target !== id),
-      selectedNodeId: s.selectedNodeId === id ? null : s.selectedNodeId,
-    })),
-  updateNode: (id, data) =>
-    set((s) => ({
-      nodes: s.nodes.map((n) =>
-        n.id === id ? { ...n, data: { ...n.data, ...data } } : n
-      ),
-    })),
-  setNodes: (nodes) => set({ nodes }),
-  setEdges: (edges) => set({ edges }),
-  addEdge: (edge) => set((s) => ({ edges: [...s.edges, edge] })),
-  removeEdge: (id) => set((s) => ({ edges: s.edges.filter((e) => e.id !== id) })),
-  selectNode: (id) => set({ selectedNodeId: id }),
-  updateContext: (ctx) => set((s) => ({ context: { ...s.context, ...ctx } })),
-  setValidationResults: (results) => set({ validationResults: results }),
-  setIsValidating: (val) => set({ isValidating: val }),
-  highlightIssue: (nodeIds, edgeIds) =>
-    set({ highlightedNodes: nodeIds, highlightedEdges: edgeIds }),
-  clearHighlights: () => set({ highlightedNodes: [], highlightedEdges: [] }),
-  resetCanvas: () =>
-    set({
+export const useSAMSStore = create<SAMSStore>()(
+  persist(
+    (set, get) => ({
       nodes: [],
       edges: [],
       selectedNodeId: null,
+      context: defaultContext,
       validationResults: null,
+      isValidating: false,
       highlightedNodes: [],
       highlightedEdges: [],
+
+      onNodesChange: (changes) =>
+        set((s) => ({
+          nodes: applyNodeChanges(
+            changes,
+            s.nodes as unknown as Node[]
+          ) as unknown as SAMSNode[],
+        })),
+      onEdgesChange: (changes) =>
+        set((s) => ({
+          edges: applyEdgeChanges(
+            changes,
+            s.edges as unknown as Edge[]
+          ) as unknown as SAMSEdge[],
+        })),
+
+      addNode: (node) => set((s) => ({ nodes: [...s.nodes, node] })),
+      removeNode: (id) =>
+        set((s) => ({
+          nodes: s.nodes.filter((n) => n.id !== id),
+          edges: s.edges.filter((e) => e.source !== id && e.target !== id),
+          selectedNodeId: s.selectedNodeId === id ? null : s.selectedNodeId,
+        })),
+      updateNode: (id, data) =>
+        set((s) => ({
+          nodes: s.nodes.map((n) =>
+            n.id === id ? { ...n, data: { ...n.data, ...data } } : n
+          ),
+        })),
+      setNodes: (nodes) => set({ nodes }),
+      setEdges: (edges) => set({ edges }),
+      addEdge: (edge) => set((s) => ({ edges: [...s.edges, edge] })),
+      removeEdge: (id) => set((s) => ({ edges: s.edges.filter((e) => e.id !== id) })),
+      selectNode: (id) => set({ selectedNodeId: id }),
+      updateContext: (ctx) => set((s) => ({ context: { ...s.context, ...ctx } })),
+      setValidationResults: (results) => set({ validationResults: results }),
+      setIsValidating: (val) => set({ isValidating: val }),
+      highlightIssue: (nodeIds, edgeIds) =>
+        set({ highlightedNodes: nodeIds, highlightedEdges: edgeIds }),
+      clearHighlights: () => set({ highlightedNodes: [], highlightedEdges: [] }),
+      resetCanvas: () =>
+        set({
+          nodes: [],
+          edges: [],
+          selectedNodeId: null,
+          validationResults: null,
+          highlightedNodes: [],
+          highlightedEdges: [],
+        }),
+
+      exportDiagram: () => {
+        const s = get()
+        return { version: 1, nodes: s.nodes, edges: s.edges, context: s.context }
+      },
+      loadDiagram: (snapshot) =>
+        set({
+          nodes: snapshot.nodes ?? [],
+          edges: snapshot.edges ?? [],
+          context: { ...defaultContext, ...(snapshot.context ?? {}) },
+          selectedNodeId: null,
+          validationResults: null,
+          highlightedNodes: [],
+          highlightedEdges: [],
+        }),
     }),
-}))
+    {
+      name: 'sams-diagram',
+      // Only persist the diagram itself — never transient validation/highlight state.
+      partialize: (s) => ({ nodes: s.nodes, edges: s.edges, context: s.context }),
+    }
+  )
+)

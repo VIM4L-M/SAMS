@@ -12,6 +12,11 @@ func NewValidator(rules []models.Rule) *Validator {
 	return &Validator{rules: rules}
 }
 
+// RuleCount returns the number of rules the validator checks.
+func (v *Validator) RuleCount() int {
+	return len(v.rules)
+}
+
 func (v *Validator) Validate(req models.ValidationRequest) models.ValidationResult {
 	if len(req.Nodes) == 0 {
 		return models.ValidationResult{
@@ -301,10 +306,8 @@ func (v *Validator) Validate(req models.ValidationRequest) models.ValidationResu
 	if r, ok := ruleMap["rule_016"]; ok {
 		hasBackend := hasNodeOfType(graph, "backend") || hasNodeOfType(graph, "microservice")
 		growing := ctx.Stage == "growing" || ctx.Stage == "scale"
-		// "monitoring" is represented as absence of monitoring node type — no dedicated
-		// component in v1, so we check if the stage implies it matters
-		if hasBackend && growing {
-			// Only fire if there's no explicit monitoring-type node (future-proofing)
+		noMonitoring := !hasNodeOfType(graph, "monitoring")
+		if hasBackend && growing && noMonitoring {
 			addWarning(r, nodeIDsOfType(graph, "backend"), nil)
 		}
 	}

@@ -5,7 +5,7 @@ import type { ComponentCategory, ComponentItem } from '../../types'
 const categoryIcons: Record<string, string> = {
   frontend: '🖥️', backend: '⚙️', microservice: '🔧', database: '🗄️',
   cache: '⚡', queue: '📨', loadbalancer: '⚖️', apigateway: '🌐',
-  cdn: '🚀', storage: '💾', network: '🌐',
+  cdn: '🚀', storage: '💾', network: '🌐', monitoring: '📊',
 }
 
 const accentColors: Record<string, string> = {
@@ -19,6 +19,7 @@ const accentColors: Record<string, string> = {
   apigateway: 'hover:border-cyan-500/50 hover:bg-cyan-500/5',
   cdn: 'hover:border-pink-500/50 hover:bg-pink-500/5',
   storage: 'hover:border-slate-400/50 hover:bg-slate-500/5',
+  monitoring: 'hover:border-amber-500/50 hover:bg-amber-500/5',
 }
 
 function DraggableComponent({ item }: { item: ComponentItem }) {

@@ -9,3 +9,5 @@ conditions:
     stage: "growing"
   requiredNodes:
     - backend
+  forbiddenNodes:
+    - monitoring

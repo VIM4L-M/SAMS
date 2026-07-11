@@ -1,12 +1,9 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useCallback, useRef } from 'react'
 import {
   ReactFlow,
   Background,
   Controls,
   MiniMap,
-  addEdge,
-  useNodesState,
-  useEdgesState,
   type Connection,
   type Node,
   type Edge,
@@ -16,35 +13,42 @@ import '@xyflow/react/dist/style.css'
 import { nodeTypes } from './NodeTypes'
 import { edgeTypes } from './EdgeTypes/DefaultEdge'
 import { useSAMSStore } from '../../store'
-import type { SAMSNode, SAMSEdge } from '../../types'
+import type { SAMSEdge } from '../../types'
 
-let nodeCounter = 1
+// Generate a collision-proof node id even after loading a saved diagram.
+function nextNodeId(existing: { id: string }[]): string {
+  let max = 0
+  for (const n of existing) {
+    const m = /^node_(\d+)$/.exec(n.id)
+    if (m) max = Math.max(max, Number(m[1]))
+  }
+  return `node_${max + 1}`
+}
 
 export const Canvas = React.memo(function Canvas() {
-  const setStoreNodes = useSAMSStore((s) => s.setNodes)
-  const setStoreEdges = useSAMSStore((s) => s.setEdges)
+  // Store is the single source of truth (controlled mode).
+  const nodes = useSAMSStore((s) => s.nodes)
+  const edges = useSAMSStore((s) => s.edges)
+  const onNodesChange = useSAMSStore((s) => s.onNodesChange)
+  const onEdgesChange = useSAMSStore((s) => s.onEdgesChange)
+  const addStoreEdge = useSAMSStore((s) => s.addEdge)
+  const addStoreNode = useSAMSStore((s) => s.addNode)
   const selectNode = useSAMSStore((s) => s.selectNode)
-
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([])
 
   const reactFlowWrapper = useRef<HTMLDivElement>(null)
   const [reactFlowInstance, setReactFlowInstance] = React.useState<any>(null)
 
-  useEffect(() => { setStoreNodes(nodes as unknown as SAMSNode[]) }, [nodes, setStoreNodes])
-  useEffect(() => { setStoreEdges(edges as unknown as SAMSEdge[]) }, [edges, setStoreEdges])
-
   const onConnect = useCallback(
     (params: Connection) => {
-      const newEdge: Edge = {
-        ...params,
+      const newEdge: SAMSEdge = {
         id: `edge_${Date.now()}`,
-        type: 'default',
+        source: params.source,
+        target: params.target,
         data: { connectionType: 'sync', protocol: 'https' },
-      } as Edge
-      setEdges((prev) => addEdge(newEdge, prev))
+      }
+      addStoreEdge(newEdge)
     },
-    [setEdges]
+    [addStoreEdge]
   )
 
   const onNodeClick = useCallback(
@@ -72,8 +76,8 @@ export const Canvas = React.memo(function Canvas() {
         y: event.clientY,
       })
 
-      const id = `node_${nodeCounter++}`
-      const newNode: Node = {
+      const id = nextNodeId(useSAMSStore.getState().nodes)
+      const newNode = {
         id,
         type: componentData.type,
         position,
@@ -83,10 +87,10 @@ export const Canvas = React.memo(function Canvas() {
           properties: { ...componentData.defaultProperties },
         },
       }
-      setNodes((prev) => [...prev, newNode])
+      addStoreNode(newNode)
       selectNode(id)
     },
-    [reactFlowInstance, setNodes, selectNode]
+    [reactFlowInstance, addStoreNode, selectNode]
   )
 
   const isEmpty = nodes.length === 0
@@ -94,8 +98,8 @@ export const Canvas = React.memo(function Canvas() {
   return (
     <div ref={reactFlowWrapper} className="absolute inset-0">
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
+        nodes={nodes as unknown as Node[]}
+        edges={edges as unknown as Edge[]}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
@@ -124,6 +128,7 @@ export const Canvas = React.memo(function Canvas() {
               frontend: '#3b82f6', backend: '#a855f7', microservice: '#6366f1',
               database: '#10b981', cache: '#eab308', queue: '#f97316',
               loadbalancer: '#14b8a6', apigateway: '#06b6d4', cdn: '#ec4899', storage: '#64748b',
+              monitoring: '#f59e0b',
             }
             return map[n.type ?? ''] ?? '#3a3a50'
           }}

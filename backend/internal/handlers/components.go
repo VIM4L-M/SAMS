@@ -77,6 +77,12 @@ var componentLibrary = []ComponentCategory{
 			{ID: "object-storage", Type: "storage", Label: "Object Storage", Icon: "object-storage.svg", DefaultProperties: map[string]bool{}},
 		},
 	},
+	{
+		Category: "monitoring", CategoryLabel: "Observability", CategoryIcon: "📊",
+		Items: []ComponentItem{
+			{ID: "monitoring", Type: "monitoring", Label: "Monitoring", Icon: "monitoring.svg", DefaultProperties: map[string]bool{}},
+		},
+	},
 }
 
 func Components(w http.ResponseWriter, r *http.Request) {

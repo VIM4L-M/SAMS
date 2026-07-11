@@ -21,6 +21,7 @@ var validNodeTypes = map[string]bool{
 	"frontend": true, "backend": true, "microservice": true,
 	"database": true, "cache": true, "queue": true,
 	"loadbalancer": true, "apigateway": true, "cdn": true, "storage": true,
+	"monitoring": true,
 }
 
 var validConnectionTypes = map[string]bool{"sync": true, "async": true}
@@ -143,7 +144,7 @@ func Validate(v *engine.Validator) http.HandlerFunc {
 		resp := models.ValidationResponse{
 			Results: result,
 			Metadata: models.Metadata{
-				RulesChecked: 29,
+				RulesChecked: v.RuleCount(),
 				TimeMs:       elapsed,
 			},
 		}

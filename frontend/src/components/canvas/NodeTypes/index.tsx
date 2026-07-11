@@ -35,6 +35,9 @@ const CdnNode = React.memo((p: SAMSNodeProps) => (
 const StorageNode = React.memo((p: SAMSNodeProps) => (
   <BaseNode {...p} icon="💾" iconBg="bg-slate-500/20" accentBorder="border-l-slate-400" />
 ))
+const MonitoringNode = React.memo((p: SAMSNodeProps) => (
+  <BaseNode {...p} icon="📊" iconBg="bg-amber-500/20" accentBorder="border-l-amber-500" />
+))
 
 export const nodeTypes = {
   frontend: FrontendNode,
@@ -47,4 +50,5 @@ export const nodeTypes = {
   apigateway: ApiGatewayNode,
   cdn: CdnNode,
   storage: StorageNode,
+  monitoring: MonitoringNode,
 }
